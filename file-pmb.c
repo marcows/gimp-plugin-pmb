@@ -406,9 +406,12 @@ read_image (FILE         *fd,
 
   gimp_image_set_filename (image, name);
 
-  /* gimp_image_insert_layer is not available in public header */
-  /* gimp_image_insert_layer (image, layer, -1, 0); */
+  #if GIMP_CHECK_VERSION(2,7,2) // 2.8
+  gimp_image_insert_layer (image, layer, -1, 0);
+  #else // 2.6
   gimp_image_add_layer (image, layer, 0);
+  #endif
+
   drawable = gimp_drawable_get (layer);
 
   dest = g_malloc (width * height * 1);
