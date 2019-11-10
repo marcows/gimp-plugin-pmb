@@ -342,6 +342,7 @@ load_pmb (const gchar  *name,
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
                    _("'%s' is not a valid PMB file"),
                    gimp_filename_to_utf8 (name));
+      fclose (fd);
       return -1;
     }
 
@@ -351,6 +352,7 @@ load_pmb (const gchar  *name,
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
                    _("'%s' is not a valid PMB file"),
                    gimp_filename_to_utf8 (name));
+      fclose (fd);
       return -1;
     }
   width = atoi (buffer);
@@ -361,11 +363,14 @@ load_pmb (const gchar  *name,
       g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
                    _("'%s' is not a valid PMB file"),
                    gimp_filename_to_utf8 (name));
+      fclose (fd);
       return -1;
     }
   height = atoi (buffer);
 
   image_ID = read_image (fd, name, width, height);
+
+  fclose (fd);
 
   if (image_ID < 0)
     return -1;
@@ -441,8 +446,6 @@ read_image (FILE         *fd,
         }
       gimp_progress_update ((gdouble) xpos / (gdouble) width);
     }
-
-  fclose (fd);
 
   gimp_progress_update (1.0);
 
